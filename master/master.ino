@@ -1,13 +1,33 @@
+/* **********************************************************************
+ * FileName     : master.ino
+ * Date         : 2019.07.15
+ * Author       : JaeHong-Min
+ * **********************************************************************/
+
+
+
+/* INCLUDES *********************************************************** */
+
 #include <Wire.h>
 
-#define BAUDRATE 9600
+
+/* DEFINES ************************************************************ */
+
+/* Serial */
+
+#define BAUDRATE 115200
 #define ADDRESS  8
+
+
+/* STRUCTURES ********************************************************* */
 
 struct _Protocol {
   char Command;
   byte Message;
-  char Status[6];
 } Protocol;
+
+
+/* FUNCTIONS ********************************************************** */
 
 void setup() {
   Serial.begin(BAUDRATE);
@@ -19,7 +39,7 @@ void loop() {
   if (Serial.available()) {
     Protocol.Command = Serial.read();
     
-    if (Protocol.Command == 'T') {
+    if (Protocol.Command == 'T' || Protocol.Command == 'F') {
       Protocol.Message = Serial.parseInt();
     } else {
       Protocol.Message = 0;
@@ -28,7 +48,7 @@ void loop() {
     sendProtocol();
     
     if (Protocol.Command == 'C' || Protocol.Command == 'S') {
-      recvProtocol();
+      //recvProtocol();
       printProtocol();
     }
   }
@@ -68,7 +88,7 @@ void recvProtocol() {
 void printProtocol() {
   Serial.print(Protocol.Command);
   Serial.print(":");
-  Serial.print(Protocol.Message);
-  Serial.print(" ");
-  Serial.println(Protocol.Status);
+  Serial.println(Protocol.Message);
 }
+
+/* ******************************************************************** */
