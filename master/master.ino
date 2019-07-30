@@ -48,7 +48,7 @@ void loop() {
     sendProtocol();
     
     if (Protocol.Command == 'C' || Protocol.Command == 'S') {
-      //recvProtocol();
+      recvProtocol();
       printProtocol();
     }
   }

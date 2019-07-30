@@ -20,12 +20,9 @@
 
 /* I/O Pins */
 
-#define PIN_FAN           9
-#define PIN_HEATER        10
-#define PIN_THERMISTOR    15
-
-#define PIN_SDA           18
-#define PIN_SCL           19
+#define PIN_FAN           A3
+#define PIN_HEATER        A4
+#define PIN_THERMISTOR    A0
 
 /* PCR */
 
@@ -103,8 +100,6 @@ void setup() {
   while (!Serial);
   
   Wire.begin(ADDRESS);
-  Wire.setSDA(PIN_SDA);
-  Wire.setSCL(PIN_SCL);
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
   
@@ -207,7 +202,7 @@ void findPID() {
   for (int i = 1; i < 5; i++) {
     temp = fabs(preTarget - PID_SET[i][0]) + fabs(curTarget - PID_SET[i][1]);
     
-    if (tmp < dist) {
+    if (temp < dist) {
       dist  = temp;
       index = i;
     }
