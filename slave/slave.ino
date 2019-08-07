@@ -116,7 +116,7 @@ void loop() {
   
   // Read Temperature
   measure();
-  Serial.println(Temper);
+  //Serial.println(Temper);
   
   // Check Overheat
   if (Temper > OVERHEAT) {
@@ -244,6 +244,7 @@ void receiveEvent(int len) {
         findPID();
         
         targetTempFlag  = preTarget > curTarget;
+        freeRunning     = false;
         isTargetArrival = false;
       }
       
@@ -282,7 +283,7 @@ void controlOff() {
 }
 
 void printProtocol() {
-  Serial.print(Protocol.Command);
+  Serial.print((int)(Protocol.Command));
   Serial.print(":");
   Serial.println(Protocol.Message);
 }

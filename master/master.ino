@@ -18,6 +18,8 @@
 #define BAUDRATE 115200
 #define ADDRESS  8
 
+#define AUTO
+
 
 /* STRUCTURES ********************************************************* */
 
@@ -31,6 +33,8 @@ struct _Protocol {
 
 void setup() {
   Serial.begin(BAUDRATE);
+  
+  while (!Serial);
   
   Wire.begin();
 }
@@ -49,8 +53,8 @@ void loop() {
     
     if (Protocol.Command == 'C' || Protocol.Command == 'S') {
       recvProtocol();
-      printProtocol();
     }
+    printProtocol();
   }
 }
 
