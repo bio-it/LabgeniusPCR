@@ -53,8 +53,8 @@ void loop() {
     
     if (Protocol.Command == 'C' || Protocol.Command == 'S') {
       recvProtocol();
+      printProtocol();
     }
-    printProtocol();
   }
 }
 
@@ -90,9 +90,7 @@ void recvProtocol() {
 }
 
 void printProtocol() {
-  Serial.print(Protocol.Command);
-  Serial.print(":");
-  Serial.println(Protocol.Message);
+  Serial.println(String(Protocol.Command) + ":" + String(Protocol.Message));
 }
 
 /* ******************************************************************** */

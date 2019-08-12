@@ -266,14 +266,14 @@ void reset() {
   
   preTarget           = 0.0f;
   curTarget           = 0.0f;
-
+  
   Fan                 = 0;
   
   freeRunning         = false;
   targetTempFlag      = false;
   isTargetArrival     = false;
   freeRunningCounter  = 0;
-
+  
   controlOff();
 }
 
@@ -283,7 +283,7 @@ void controlOff() {
 }
 
 void printProtocol() {
-  Serial.print((int)(Protocol.Command));
+  Serial.print(Protocol.Command);
   Serial.print(":");
   Serial.println(Protocol.Message);
 }
