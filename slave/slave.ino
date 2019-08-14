@@ -13,6 +13,8 @@
 
 /* DEFINES ************************************************************ */
 
+//#define DEBUG
+
 /* Serial */
 
 #define BAUDRATE          115200
@@ -44,6 +46,7 @@
 #define OVERHEAT          150
 
 #define ARRIVAL_DELTA     0.5f
+
 
 
 /* STRUCTURES ********************************************************* */
@@ -96,10 +99,11 @@ int freeRunningCounter  = 0;
 /* FUNCTIONS ********************************************************** */
 
 void setup() {
+#ifdef DEBUG
   Serial.begin(BAUDRATE);
   
   while (!Serial);
-  
+#endif
   Wire.begin(ADDRESS);
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
@@ -117,7 +121,6 @@ void loop() {
   
   // Read Temperature
   measure();
-  //Serial.println(Temper);
   
   // Check Overheat
   if (Temper > OVERHEAT) {
@@ -260,8 +263,9 @@ void receiveEvent(int len) {
         Fan = Protocol.Data1;
       }
     }
-    
+#ifdef DEBUG
     printProtocol();
+#endif
   }
 }
 
