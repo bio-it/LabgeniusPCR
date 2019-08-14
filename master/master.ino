@@ -25,7 +25,8 @@
 
 struct _Protocol {
   char Command;
-  byte Message;
+  byte Data1;
+  byte Data2;
 } Protocol;
 
 
@@ -44,9 +45,11 @@ void loop() {
     Protocol.Command = Serial.read();
     
     if (Protocol.Command == 'T' || Protocol.Command == 'F') {
-      Protocol.Message = Serial.parseInt();
+      Protocol.Data1 = Serial.parseInt();
+      Protocol.Data2 = 0;
     } else {
-      Protocol.Message = 0;
+      Protocol.Data1 = 0;
+      Protocol.Data2 = 0;
     }
     
     sendProtocol();
@@ -61,7 +64,8 @@ void loop() {
 void sendProtocol() {
   Wire.beginTransmission(ADDRESS);
   Wire.write(Protocol.Command);
-  Wire.write(Protocol.Message);
+  Wire.write(Protocol.Data1);
+  Wire.write(Protocol.Data2);
   Wire.endTransmission();
 }
 
@@ -90,7 +94,7 @@ void recvProtocol() {
 }
 
 void printProtocol() {
-  Serial.println(String(Protocol.Command) + ":" + String(Protocol.Message));
+  Serial.println(String(Protocol.Command) + ":" + String(Protocol.Data1) + ", " + String(Protocol.Data2));
 }
 
 /* ******************************************************************** */

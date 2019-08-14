@@ -50,7 +50,8 @@
 
 struct _Protocol {
   char Command;
-  byte Message;
+  byte Data1;
+  byte Data2;
 } Protocol;
 
 
@@ -215,21 +216,25 @@ void findPID() {
 
 void requestEvent() {
   if (Protocol.Command == 'C') {
-    Protocol.Message = Temper;
+    Protocol.Data1 = (int) (Temper);
+    Protocol.Data2 = (int) (Temper * 100) % 100;
   }
   
   if (Protocol.Command == 'S') {
-    Protocol.Message = Status;
+    Protocol.Data1 = Status;
+    Protocol.Data2 = 0;
   }
   
   Wire.write(Protocol.Command);
-  Wire.write(Protocol.Message);
+  Wire.write(Protocol.Data1);
+  Wire.write(Protocol.Data2);
 }
 
 void receiveEvent(int len) {
   if (Wire.available() > 0) {
     Protocol.Command = Wire.read();
-    Protocol.Message = Wire.read();
+    Protocol.Data1 = Wire.read();
+    Protocol.Data2 = Wire.read();
     
     if (Protocol.Command == 'R') {   // Reset
       Status = STATUS_READY;
@@ -240,7 +245,7 @@ void receiveEvent(int len) {
       if (Protocol.Command == 'T') { // Temperature
         Status = STATUS_RUN;
         preTarget = curTarget;
-        curTarget = Protocol.Message;
+        curTarget = Protocol.Data1;
         findPID();
         
         targetTempFlag  = preTarget > curTarget;
@@ -252,7 +257,7 @@ void receiveEvent(int len) {
         reset();
         
         Status = STATUS_READY;
-        Fan = Protocol.Message;
+        Fan = Protocol.Data1;
       }
     }
     
@@ -285,7 +290,9 @@ void controlOff() {
 void printProtocol() {
   Serial.print(Protocol.Command);
   Serial.print(":");
-  Serial.println(Protocol.Message);
+  Serial.print(Protocol.Data1);
+  Serial.print(", ");
+  Serial.println(Protocol.Data2);
 }
 
 /* ******************************************************************** */
