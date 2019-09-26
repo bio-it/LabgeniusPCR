@@ -94,7 +94,7 @@ boolean targetTempFlag  = false;
 boolean isTargetArrival = false;
 int freeRunningCounter  = 0;
 
-
+unsigned long startTime = 0;
 
 /* FUNCTIONS ********************************************************** */
 
@@ -116,34 +116,40 @@ void setup() {
 }
 
 void loop() {
-  unsigned long startTime = micros();
-  int processTime = PROCESS_PERIOD;
-  
-  // Read Temperature
-  measure();
-  
-  // Check Overheat
-  if (Temper > OVERHEAT) {
-    Status = STATUS_ERR;
-    reset();
+  unsigned long currentTime = micros();
+
+  if (startTime + PROCESS_PERIOD < currentTime) {
+    startTime = currentTime;
+    
+    // Read Temperature
+    measure();
+    
+    // Check Overheat
+    if (Temper > OVERHEAT) {
+      Status = STATUS_ERR;
+      reset();
+    }
+    
+    // Refrigerator
+    if (Status == STATUS_READY) {
+      digitalWrite(PIN_FAN, Fan);
+    }
+    
+    // Temperature PID Control
+    if (Status == STATUS_RUN) {
+      control();
+    }
   }
-  
-  // Refrigerator
-  if (Status == STATUS_READY) {
-    digitalWrite(PIN_FAN, Fan);
-  }
-  
-  // Temperature PID Control
-  if (Status == STATUS_RUN) {
-    control();
-  }
-  
-  processTime -= micros() - startTime;
-  delayMicroseconds(processTime > 0 ? processTime : 0);
 }
 
 void measure() {
-  Raw_Temper = analogRead(PIN_THERMISTOR);
+  int sum = 0;
+  
+  for (int i = 0; i < 10; i++) {
+    sum += analogRead(PIN_THERMISTOR);
+  }
+  
+  Raw_Temper = sum / 10;
   
   const float u = Raw_Temper / 1024.0f;
   const float r = (1/u-1)*RREF;
